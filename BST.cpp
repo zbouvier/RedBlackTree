@@ -1,18 +1,18 @@
-class BST {
+class Tree {
 
-    struct node {
+    struct Node {
         int value;
-        node* l;
-        node* r;
+        Node* l;
+        Node* r;
     };
 
-    node* root;
+    Node* root;
 
-    node* insertNode(int x, node* t)
+    Node* insertNode(int x, Node* t)
     {
         if (t == NULL)
         {
-            t = new node;
+            t = new Node;
             t->value = x;
             t->l = t->r = NULL;
         }
@@ -23,20 +23,9 @@ class BST {
         return t;
     }
 
-    node* find(node* t, int x) {
-        if (t == NULL)
-            return NULL;
-        else if (x < t->value)
-            return find(t->l, x);
-        else if (x > t->value)
-            return find(t->r, x);
-        else
-            return t;
-    }
-
 public:
-    BST() {
-        root = NULL;
+    Tree() {
+        root = nullptr;
     }
 
 
@@ -44,7 +33,5 @@ public:
         root = insertNode(x, root);
     }
 
-    void search(int x) {
-        root = find(root, x);
-    }
+
 };

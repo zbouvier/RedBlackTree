@@ -1,55 +1,90 @@
-// RedBlackTree.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include<iostream>
-
 using namespace std;
-/* Your generic Binary Search Tree */
 class Node {
-public:
-    int data;
-    Node* left, * right, * parent;
-    struct t_red_black_Node {
-        enum { red, black } colour;
-        void* item;
-        struct t_red_black_Node* left, * right, * parent;
-    }
+    public:
+    enum class colour { red, black };
+    int item = NULL;
+    Node* left = NULL;
+    Node* right = NULL;
+    Node* parent = NULL;
+    colour c = Node::colour::black;
+    
 };
 class Tree {
-
-    public:
-        Node* root;
-
-        Node* insertNode(int x, Node* t)
+    
+public:
+    Node* root;
+    Node* insertNode(Node* x, Node* t)
+    {
+        if (t == NULL)
         {
-            if (x == NULL) return getNode(x);
-            if (x < t->data) { //to the left subtree
-                Node* leftChild = insertNode(x,t->left);
-                t->left = leftChild;
-                leftChild->parent = t;
-            }
-            else if (x > t->data) { // to the right subtree
-                Node* rightChild = insertNode(x,t->right);
-                t->right = rightChild;
-                rightChild->parent = t;
-            }
-            return t;
+
+            t = x;
+        }
+        else if (x->item < t->item)
+        {
+            x->parent = t;
+            t->left = insertNode(x, t->left);
+            
+        }
+            
+
+        else if (x->item > t->item)
+        {
+            x->parent = t;
+            t->right = insertNode(x, t->right);
+            
         }
 
-        Node* getNode(int item) {
-            Node* temp = new Node;
-            temp->data = item;
-            temp->left = temp->right = temp->parent = NULL;
-            return temp;
+        return t;
+    }
+
+    void inorder(Node* t) {
+        if (t == NULL)
+            return;
+        inorder(t->left);
+        string colorOfNode = "";
+        if (t->c == Node::colour::black)
+        {
+            colorOfNode = "B";
         }
+        else
+        {
+            colorOfNode = "R";
+        }
+        int leftItem = 0;
+        int rightItem = 0;
+        if (t->left != nullptr)
+            leftItem = t->left->item;
+        else
+            leftItem = -1;
+        if (t->right != nullptr)
+            rightItem = t->right->item;
+        else
+            rightItem = -1;
+        cout << t->item << "(" << colorOfNode <<")" << "L("<< leftItem <<")"<<"R("<< rightItem <<")" << endl;
+        inorder(t->right);
+    }
+
+
+
+    Tree() {
+        root = NULL;
+    }
+    void insert(Node* x) {
+        root = insertNode(x, root);
+    }
+
+    void display() {
+        inorder(root);
+        cout << endl;
+    }
+
 
 };
-/* End of Binary Search Tree */
+/* a red-black tree's node structure. you may write a class instead of a struct */
 
-/* a red-black tree's Node structure. you may write a class instead of a struct */
-
-
-leftRotate(Tree* T, Node* x) {
+void left_rotate(Tree* T, Node* x) {
     Node* y;
     y = x->right;
     /* Turn y's left sub-tree into x's right sub-tree */
@@ -72,47 +107,112 @@ leftRotate(Tree* T, Node* x) {
     y->left = x;
     x->parent = y;
 }
-
-void rbInsert(Tree* T, Node* x) {
+void right_rotate(Tree* T, Node* x) {
+    Node* y;
+    y = x->left;
+    /* Turn y's left sub-tree into x's right sub-tree */
+    x->left = y->right;
+    if (y->right != NULL)
+        y->right->parent = x;
+    /* y's new parent was x's parent */
+    y->parent = x->parent;
+    /* Set the parent to point to y instead of x */
+    /* First see whether we're at the root */
+    if (x->parent == NULL) T->root = y;
+    else
+        if (x == (x->parent)->right)
+            /* x was on the left of its parent */
+            x->parent->right = y;
+        else
+            /* x must have been on the right */
+            x->parent->left = y;
+    /* Finally, put x on y's left */
+    y->right = x;
+    x->parent = y;
+}
+void rb_insert(Tree* T, Node* x) {
     /* Insert in the tree in the usual way */
-    T->insertNode(T, x);
+    T->insert(x);
     /* Now restore the red-black property */
-    x->colour = red;
-    while ((x != T->root) && (x->parent->colour == red)) {
+    x->c = Node::colour::red;
+    while ((x != T->root) && (x->parent->c == Node::colour::red)) {
         if (x->parent == x->parent->parent->left) {
             /* If x's parent is a left, y is x's right 'uncle' */
-            y = x->parent->parent->right;
-            if (y->colour == red) {
+            Node* y = x->parent->parent->right;
+            if (y != nullptr && y->c == Node::colour::red) {
                 /* case 1 - change the colours */
-                x->parent->colour = black;
-                y->colour = black;
-                x->parent->parent->colour = red;
+                x->parent->c = Node::colour::black;
+                y->c = Node::colour::black;
+                x->parent->parent->c = Node::colour::red;
                 /* Move x up the tree */
                 x = x->parent->parent;
             }
             else {
-                /* y is a black Node */
+                /* y is a black node */
                 if (x == x->parent->right) {
                     /* and x is to the right */
                     /* case 2 - move x up and rotate */
                     x = x->parent;
-                    leftRotate(T, x);
+                    left_rotate(T, x);
                 }
                 /* case 3 */
-                x->parent->colour = black;
-                x->parent->parent->colour = red;
+                x->parent->c = Node::colour::black;
+                x->parent->parent->c = Node::colour::red;
                 right_rotate(T, x->parent->parent);
             }
         }
         else {
-            /* repeat the "if" part with right and left
-             exchanged */
+            /* If x's parent is a right, y is x's left 'uncle' */
+            Node* y = x->parent->parent->left;
+            if (y != nullptr && y->c == Node::colour::red) {
+                /* case 1 - change the colours */
+                x->parent->c = Node::colour::black;
+                y->c = Node::colour::black;
+                x->parent->parent->c = Node::colour::red;
+                /* Move x up the tree */
+                x = x->parent->parent;
+            }
+            else {
+                /* y is a black node */
+                if (x == x->parent->left) {
+                    /* and x is to the left */
+                    /* case 2 - move x up and rotate */
+                    x = x->parent;
+                    right_rotate(T, x);
+                }
+                /* case 3 */
+                x->parent->c = Node::colour::black;
+                x->parent->parent->c = Node::colour::red;
+                left_rotate(T, x->parent->parent);
+            }
         }
     }
     /* Colour the root black */
-    T->root->colour = black;
+    T->root->c = Node::colour::black;
 }
 
+
+
 int main() {
+    Tree* t = new Tree;
+    Node* toBeRoot = new Node;
+    toBeRoot->item = 1;
+    rb_insert(t, toBeRoot);
+    Node* test = new Node;
+    test->item = 2;
+    rb_insert(t, test);
+    Node* test1 = new Node;
+    test1->item = 3;
+    rb_insert(t, test1);
+    Node* test2 = new Node;
+    test2->item = 10;
+    rb_insert(t, test2);
+    Node* test3 = new Node;
+    test3->item = 0;
+    rb_insert(t, test3);
+    Node* test4 = new Node;
+    test3->item = 123;
+    rb_insert(t, test4);
+    t->display();
     return 0;
 }
