@@ -2,6 +2,10 @@
 using namespace std;
 class Node {
     public:
+    Node(int item)
+    {
+        this->item = item;
+    }
     enum class colour { red, black };
     int item = NULL;
     Node* left = NULL;
@@ -46,11 +50,11 @@ public:
         string colorOfNode = "";
         if (t->c == Node::colour::black)
         {
-            colorOfNode = "B";
+            colorOfNode = "Black";
         }
         else
         {
-            colorOfNode = "R";
+            colorOfNode = "Red";
         }
         int leftItem = 0;
         int rightItem = 0;
@@ -65,6 +69,32 @@ public:
         cout << t->item << "(" << colorOfNode <<")" << "L("<< leftItem <<")"<<"R("<< rightItem <<")" << endl;
         inorder(t->right);
     }
+    void postOrder(Node* t) {
+        if (t == NULL)
+            return;
+        string colorOfNode = "";
+        if (t->c == Node::colour::black)
+        {
+            colorOfNode = "Black";
+        }
+        else
+        {
+            colorOfNode = "Red";
+        }
+        int leftItem = 0;
+        int rightItem = 0;
+        if (t->left != nullptr)
+            leftItem = t->left->item;
+        else
+            leftItem = -1;
+        if (t->right != nullptr)
+            rightItem = t->right->item;
+        else
+            rightItem = -1;
+        cout << t->item << "(" << colorOfNode << ")" << "L(" << leftItem << ")" << "R(" << rightItem << ")" << endl;
+        postOrder(t->left);
+        postOrder(t->right);
+    }
 
 
 
@@ -78,6 +108,7 @@ public:
     void display() {
         inorder(root);
         cout << endl;
+        cout << "----------------" << endl;
     }
 
 
@@ -85,6 +116,7 @@ public:
 /* a red-black tree's node structure. you may write a class instead of a struct */
 
 void left_rotate(Tree* T, Node* x) {
+    cout << "Left rotation triggered!" << endl;
     Node* y;
     y = x->right;
     /* Turn y's left sub-tree into x's right sub-tree */
@@ -108,6 +140,7 @@ void left_rotate(Tree* T, Node* x) {
     x->parent = y;
 }
 void right_rotate(Tree* T, Node* x) {
+    cout << "Right rotation triggered!" << endl;
     Node* y;
     y = x->left;
     /* Turn y's left sub-tree into x's right sub-tree */
@@ -195,24 +228,29 @@ void rb_insert(Tree* T, Node* x) {
 
 int main() {
     Tree* t = new Tree;
-    Node* toBeRoot = new Node;
-    toBeRoot->item = 1;
-    rb_insert(t, toBeRoot);
-    Node* test = new Node;
-    test->item = 2;
-    rb_insert(t, test);
-    Node* test1 = new Node;
-    test1->item = 3;
-    rb_insert(t, test1);
-    Node* test2 = new Node;
-    test2->item = 10;
-    rb_insert(t, test2);
-    Node* test3 = new Node;
-    test3->item = 0;
-    rb_insert(t, test3);
-    Node* test4 = new Node;
-    test3->item = 123;
-    rb_insert(t, test4);
+    cout << "Test Case 0: Insert Root 100" << endl;
+    Node* test01 = new Node(100);
+    rb_insert(t, test01);
     t->display();
+    
+    cout << "Test Case 1: Insert 200,300 and get a left rotation" << endl;
+    Node* test11 = new Node(200);
+    rb_insert(t, test11);
+    Node* test12 = new Node(300);
+    rb_insert(t, test12);
+    t->display();
+    cout << "Test Case 2: Insert 99,98 and get a right rotation" << endl;
+    Node* test21 = new Node(99);
+    rb_insert(t, test21);
+    Node* test22 = new Node(98);
+    rb_insert(t, test22);
+    t->display();
+    cout << "Test Case 3: Insert 301,302 and get a right rotation, then a left rotation" << endl;
+    Node* test31 = new Node(302);
+    rb_insert(t, test31);
+    Node* test32 = new Node(301);
+    rb_insert(t, test32);
+    t->display();
+
     return 0;
 }
