@@ -7,7 +7,7 @@ class Node {
         this->item = item;
     }
     enum class colour { red, black };
-    int item = NULL;
+    int item = -1;
     Node* left = NULL;
     Node* right = NULL;
     Node* parent = NULL;
@@ -262,3 +262,59 @@ int main() {
     t->displayPostOrder();
     return 0;
 }
+/*
+Test Case 0: Insert Root 100
+100(Black)L(-1)R(-1)
+
+----------------
+Test Case 1: Insert 200,300 and get a left rotation
+Left rotation triggered!
+100(Red)L(-1)R(-1)
+200(Black)L(100)R(300)
+300(Red)L(-1)R(-1)
+
+----------------
+Test Case 2: Insert 99,98 and get a right rotation
+Right rotation triggered!
+98(Red)L(-1)R(-1)
+99(Black)L(98)R(100)
+100(Red)L(-1)R(-1)
+200(Black)L(99)R(300)
+300(Black)L(-1)R(-1)
+
+----------------
+Test Case 3: Insert 301,302 and get a right rotation, then a left rotation
+Right rotation triggered!
+Left rotation triggered!
+98(Red)L(-1)R(-1)
+99(Black)L(98)R(100)
+100(Red)L(-1)R(-1)
+200(Black)L(99)R(301)
+300(Red)L(-1)R(-1)
+301(Black)L(300)R(302)
+302(Red)L(-1)R(-1)
+
+----------------
+Finally, printing out the tree in inorder, and post order:
+
+--------In Order--------
+98(Red)L(-1)R(-1)
+99(Black)L(98)R(100)
+100(Red)L(-1)R(-1)
+200(Black)L(99)R(301)
+300(Red)L(-1)R(-1)
+301(Black)L(300)R(302)
+302(Red)L(-1)R(-1)
+
+----------------
+--------Post Order--------
+200(Black)L(99)R(301)
+99(Black)L(98)R(100)
+98(Red)L(-1)R(-1)
+100(Red)L(-1)R(-1)
+301(Black)L(300)R(302)
+300(Red)L(-1)R(-1)
+302(Red)L(-1)R(-1)
+
+----------------
+*/
