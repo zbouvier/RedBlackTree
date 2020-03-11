@@ -105,12 +105,16 @@ public:
         root = insertNode(x, root);
     }
 
-    void display() {
+    void displayInorder() {
         inorder(root);
         cout << endl;
         cout << "----------------" << endl;
     }
-
+    void displayPostOrder() {
+        postOrder(root);
+        cout << endl;
+        cout << "----------------" << endl;
+    }
 
 };
 /* a red-black tree's node structure. you may write a class instead of a struct */
@@ -231,26 +235,30 @@ int main() {
     cout << "Test Case 0: Insert Root 100" << endl;
     Node* test01 = new Node(100);
     rb_insert(t, test01);
-    t->display();
+    t->displayInorder();
     
     cout << "Test Case 1: Insert 200,300 and get a left rotation" << endl;
     Node* test11 = new Node(200);
     rb_insert(t, test11);
     Node* test12 = new Node(300);
     rb_insert(t, test12);
-    t->display();
+    t->displayInorder();
     cout << "Test Case 2: Insert 99,98 and get a right rotation" << endl;
     Node* test21 = new Node(99);
     rb_insert(t, test21);
     Node* test22 = new Node(98);
     rb_insert(t, test22);
-    t->display();
+    t->displayInorder();
     cout << "Test Case 3: Insert 301,302 and get a right rotation, then a left rotation" << endl;
     Node* test31 = new Node(302);
     rb_insert(t, test31);
     Node* test32 = new Node(301);
     rb_insert(t, test32);
-    t->display();
-
+    t->displayInorder();
+    cout << "Finally, printing out the tree in inorder, and post order:" << endl;
+    cout << endl << "--------In Order--------" << endl;
+    t->displayInorder();
+    cout << "--------Post Order--------" << endl;
+    t->displayPostOrder();
     return 0;
 }
